@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./data.db"
+}
+
+model User {
+  id              Int               @id @default(autoincrement())
+  email           String            @unique
+  password        String
+  journal         Journal[]
+  dailychallenges DailyChallenges[]
+  visionboard     VisionBoard[]
+  affrimations    Affrimations[]
+  meditation      Meditation[]
+}
+
+model Journal {
+  id      Int      @id @default(autoincrement())
+  title   String
+  content String
+  Date    DateTime
+  User    User     @relation(fields: [userId], references: [id])
+  userId  Int
+}
+
+model DailyChallenges {
+  id        Int    @id @default(autoincrement())
+  title     String
+  image     String
+  challenge String
+  User      User[]
+}
+
+model VisionBoard {
+  id       Int    @id @default(autoincrement())
+  title    String
+  photoUrl String
+  caption  String
+  User     User?  @relation(fields: [userId], references: [id])
+  userId   Int?
+}
+
+model Affrimations {
+  id              Int               @id @default(autoincrement())
+  title           String
+  User            User?             @relation(fields: [userId], references: [id])
+  userId          Int?
+  eachaffrimation EachAffrimation[]
+}
+
+model EachAffrimation {
+  id                     Int                      @id @default(autoincrement())
+  title                  String
+  image                  String
+  Affrimations           Affrimations?            @relation(fields: [affrimationsId], references: [id])
+  affrimationsId         Int?
+  eachaffrimationsection EachAffrimationSection[]
+}
+
+model EachAffrimationSection {
+  id                Int              @id @default(autoincrement())
+  voice             String
+  image             String
+  EachAffrimation   EachAffrimation? @relation(fields: [eachAffrimationId], references: [id])
+  eachAffrimationId Int?
+}
+
+model Meditation {
+  id                    Int                     @id @default(autoincrement())
+  title                 String
+  eachmeditationsection EachMeditationSection[]
+  User                  User?                   @relation(fields: [userId], references: [id])
+  userId                Int?
+}
+
+model EachMeditationSection {
+  id                       Int                        @id @default(autoincrement())
+  title                    String
+  image                    String
+  oneseactionOfmeditations OneSeactionOfMeditations[]
+  Meditation               Meditation?                @relation(fields: [meditationId], references: [id])
+  meditationId             Int?
+}
+
+model OneSeactionOfMeditations {
+  id                      Int                    @id @default(autoincrement())
+  voice                   String
+  EachMeditationSection   EachMeditationSection? @relation(fields: [eachMeditationSectionId], references: [id])
+  eachMeditationSectionId Int?
+}

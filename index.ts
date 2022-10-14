@@ -28,7 +28,15 @@ async function keepUser(token: string) {
 
 
 app.get('/users', async (req, res) => {
-    const getUser = await prisma.user.findMany()
+    const getUser = await prisma.user.findMany({
+        include: {
+            dailychallenges: true,
+            journal: true,
+            visionboard: true,
+            affrimations: true,
+            meditation: true
+        }
+    })
     res.send(getUser)
 })
 
@@ -82,8 +90,111 @@ app.get('/validation', async (req, res) => {
 })
 
 app.get('/dailychallenges', async (req, res) => {
-    const challenges = await prisma.dailyChallenges.findMany({ include: { User: true } })
-    res.send(challenges)
+    try {
+        const getChallenges = await prisma.dailyChallenges.findMany({ include: { User: true } })
+        res.send(getChallenges)
+    } catch (error) {
+        // @ts-ignore
+        res.status(400).send({ error: error.message })
+    }
+})
+
+app.get('/dailychallenges/:id', async (req, res) => {
+    const getChallengeById = await prisma.dailyChallenges.findUnique({
+        where: { id: Number(req.params.id) },
+        include: { User: true }
+    })
+    res.send(getChallengeById)
+})
+
+app.get('/affrimations', async (req, res) => {
+    try {
+        const getAffrimations = await prisma.affrimations.findMany({
+            include: {
+                User: true,
+                eachaffrimation: true
+            }
+        })
+        res.send(getAffrimations)
+    } catch (error) {
+        // @ts-ignore
+        res.status(400).send({ error: error.message })
+    }
+})
+
+app.get('/affrimations/:id', async (req, res) => {
+    const getAffrimationById = await prisma.affrimations.findUnique({
+        where: { id: Number(req.params.id) },
+        include: {
+            User: true,
+            eachaffrimation: true
+        }
+    })
+    res.send(getAffrimationById)
+})
+
+app.get('/eachaffrimation', async (req, res) => {
+    try {
+        const getEachAffrimations = await prisma.eachAffrimation.findMany({
+            include: {
+                Affrimations: true
+            }
+        })
+        res.send(getEachAffrimations)
+    } catch (error) {
+        // @ts-ignore
+        res.status(400).send({ error: error.message })
+    }
+})
+
+app.get('/eachaffrimation/:id', async (req, res) => {
+    const getEachAffrimationsById = await prisma.eachAffrimation.findUnique({
+        where: { id: Number(req.params.id) },
+        include: {
+            Affrimations: true
+        }
+    })
+    res.send(getEachAffrimationsById)
+})
+
+
+app.get('/eachaffrimationsection', async (req, res) => {
+    try {
+        const getEachAffrimationsSection = await prisma.eachAffrimationSection.findMany({
+            include: {
+                EachAffrimation: true
+            }
+        })
+        res.send(getEachAffrimationsSection)
+    } catch (error) {
+        // @ts-ignore
+        res.status(400).send({ error: error.message })
+    }
+})
+
+app.get('/eachaffrimationsection/:id', async (req, res) => {
+    const getEachAffrimationsSectionById = await prisma.eachAffrimationSection.findUnique({
+        where: { id: Number(req.params.id) },
+        include: {
+            EachAffrimation: true
+        }
+    })
+    res.send(getEachAffrimationsSectionById)
+})
+
+app.get('/meditation', async (req, res) => {
+    try {
+        const getMeditation = await prisma.meditation.findMany({
+            include: {
+                User: true,
+                eachmeditationsection: true
+            }
+        })
+        res.send(getMeditation)
+    } catch (error) {
+        // @ts-ignore
+        res.status(400).send({ error: error.message })
+    }
 })
 
 app.listen(port, () => {

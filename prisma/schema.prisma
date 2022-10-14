@@ -47,8 +47,7 @@ model VisionBoard {
 model Affrimations {
   id              Int               @id @default(autoincrement())
   title           String
-  User            User?             @relation(fields: [userId], references: [id])
-  userId          Int?
+  User            User[]
   eachaffrimation EachAffrimation[]
 }
 
@@ -73,8 +72,7 @@ model Meditation {
   id                    Int                     @id @default(autoincrement())
   title                 String
   eachmeditationsection EachMeditationSection[]
-  User                  User?                   @relation(fields: [userId], references: [id])
-  userId                Int?
+  User                  User[]
 }
 
 model EachMeditationSection {

@@ -197,6 +197,43 @@ app.get('/meditation', async (req, res) => {
     }
 })
 
+app.get('/meditation/:id', async (req, res) => {
+    const getMeditationById = await prisma.meditation.findUnique({
+        where: { id: Number(req.params.id) },
+        include: {
+            User: true,
+            eachmeditationsection: true
+        }
+    })
+    res.send(getMeditationById)
+})
+
+app.get('/eachmedatition', async (req, res) => {
+    try {
+        const getEachMedatition = await prisma.eachMeditationSection.findMany({
+            include: {
+                Meditation: true,
+                oneseactionOfmeditations: true
+            }
+        })
+        res.send(getEachMedatition)
+    } catch (error) {
+        // @ts-ignore
+        res.status(400).send({ error: error.message })
+    }
+})
+
+app.get('/eachmedatition/:id', async (req, res) => {
+    const getEachMedatition = await prisma.eachMeditationSection.findUnique({
+        where: { id: Number(req.params.id) },
+        include: {
+            Meditation: true,
+            oneseactionOfmeditations: true
+        }
+    })
+    res.send(getEachMedatition)
+})
+
 app.listen(port, () => {
     console.log(`App is running in http://localhost:${port}`)
 })

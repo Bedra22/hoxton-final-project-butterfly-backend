@@ -275,12 +275,17 @@ app.get('/eachmedatition/:id', async (req, res) => {
 //Journal
 
 app.get('/journal', async (req, res) => {
-    const getJournal = await prisma.journal.findMany({
-        include: {
-            User: true
-        }
-    })
-    res.send(getJournal)
+    try {
+        const getJournal = await prisma.journal.findMany({
+            include: {
+                User: true
+            }
+        })
+        res.send(getJournal)
+    } catch (error) {
+        // @ts-ignore
+        res.status(400).send({ error: error.message })
+    }
 })
 
 app.get('/journal/:id', async (req, res) => {
@@ -326,6 +331,70 @@ app.delete('/journal/:id', async (req, res) => {
     })
     res.send(deleteJournal)
 })
+
+//Vision Board
+
+app.get('/visionBoard', async (req, res) => {
+    try {
+        const getVisionBoard = await prisma.visionBoard.findMany({
+            include: {
+                User: true
+            }
+        })
+        res.send(getVisionBoard)
+    } catch (error) {
+        // @ts-ignore
+        res.status(400).send({ error: error.message })
+    }
+})
+
+app.get('/visionboard/:id', async (req, res) => {
+    const getVisionBoardById = await prisma.visionBoard.findUnique({
+        where: { id: Number(req.params.id) },
+        include: {
+            User: true
+        }
+    })
+    if (getVisionBoardById) {
+        res.send(getVisionBoardById)
+    } else {
+        res.status(400).send({ error: "Vision Board not found" })
+    }
+})
+
+app.post('/visionboard', async (req, res) => {
+    const newVisionBoard = await prisma.visionBoard.create({
+        data: req.body,
+        include: {
+            User: true
+        }
+    })
+    res.send(newVisionBoard)
+})
+
+app.patch('/visionboard/:id', async (req, res) => {
+    const id = Number(req.params.id)
+    const updateVisionBoard = await prisma.visionBoard.update({
+        data: req.body,
+        where: { id },
+        include: {
+            User: true
+        }
+    })
+    res.send(updateVisionBoard)
+})
+
+app.delete('/visionboard/:id', async (req, res) => {
+    const id = Number(req.params.id)
+    const deleteVisionBoard = await prisma.visionBoard.delete({
+        where: { id },
+        include: {
+            User: true
+        }
+    })
+    res.send(deleteVisionBoard)
+})
+
 
 app.listen(port, () => {
     console.log(`App is running in http://localhost:${port}`)

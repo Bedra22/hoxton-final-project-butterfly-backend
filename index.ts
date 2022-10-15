@@ -307,6 +307,26 @@ app.post('/journal', async (req, res) => {
     res.send(newJournal)
 })
 
+app.patch('/journal/:id', async (req, res) => {
+    const id = Number(req.params.id)
+    const updateJournal = await prisma.journal.update({
+        data: req.body,
+        where: { id },
+        include: {
+            User: true
+        }
+    })
+    res.send(updateJournal)
+})
+
+app.delete('/journal/:id', async (req, res) => {
+    const id = Number(req.params.id)
+    const deleteJournal = await prisma.journal.delete({
+        where: { id }
+    })
+    res.send(deleteJournal)
+})
+
 app.listen(port, () => {
     console.log(`App is running in http://localhost:${port}`)
 })

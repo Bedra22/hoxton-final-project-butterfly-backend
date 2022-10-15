@@ -14,6 +14,8 @@ const SECRET = 'Psssst'
 
 const prisma = new PrismaClient({ log: ['warn', 'error', 'info', 'query'] })
 
+
+//User
 function getToken(id: number) {
     return jwt.sign({ id: id }, SECRET, { expiresIn: '1 day' })
 }
@@ -63,6 +65,7 @@ app.post('/sign-up', async (req, res) => {
 
 })
 
+
 app.post('/log-in', async (req, res) => {
     const user = await prisma.user.findUnique({
         where: { email: req.body.email }
@@ -89,6 +92,10 @@ app.get('/validation', async (req, res) => {
 
 })
 
+
+
+//Daily Challenge
+
 app.get('/dailychallenges', async (req, res) => {
     try {
         const getChallenges = await prisma.dailyChallenges.findMany({ include: { User: true } })
@@ -104,8 +111,15 @@ app.get('/dailychallenges/:id', async (req, res) => {
         where: { id: Number(req.params.id) },
         include: { User: true }
     })
-    res.send(getChallengeById)
+    if (getChallengeById) {
+        res.send(getChallengeById)
+    } else {
+        res.status(404).send({ error: "Challenge not found" })
+    }
 })
+
+
+//Affrimation
 
 app.get('/affrimations', async (req, res) => {
     try {
@@ -130,7 +144,12 @@ app.get('/affrimations/:id', async (req, res) => {
             eachaffrimation: true
         }
     })
-    res.send(getAffrimationById)
+    if (getAffrimationById) {
+        res.send(getAffrimationById)
+    } else {
+        // @ts-ignore
+        res.status(400).send({ error: error.message })
+    }
 })
 
 app.get('/eachaffrimation', async (req, res) => {
@@ -154,7 +173,11 @@ app.get('/eachaffrimation/:id', async (req, res) => {
             Affrimations: true
         }
     })
-    res.send(getEachAffrimationsById)
+    if (getEachAffrimationsById) {
+        res.send(getEachAffrimationsById)
+    } else {
+        res.status(400).send({ error: "Affrimation not found" })
+    }
 })
 
 
@@ -179,8 +202,15 @@ app.get('/eachaffrimationsection/:id', async (req, res) => {
             EachAffrimation: true
         }
     })
-    res.send(getEachAffrimationsSectionById)
+    if (getEachAffrimationsSectionById) {
+        res.send(getEachAffrimationsSectionById)
+    } else {
+        res.status(400).send({ error: "Affrimation not found" })
+    }
 })
+
+
+//Meditation
 
 app.get('/meditation', async (req, res) => {
     try {
@@ -205,7 +235,11 @@ app.get('/meditation/:id', async (req, res) => {
             eachmeditationsection: true
         }
     })
-    res.send(getMeditationById)
+    if (getMeditationById) {
+        res.send(getMeditationById)
+    } else {
+        res.status(400).send({ error: "Meditation not found" })
+    }
 })
 
 app.get('/eachmedatition', async (req, res) => {
@@ -231,7 +265,46 @@ app.get('/eachmedatition/:id', async (req, res) => {
             oneseactionOfmeditations: true
         }
     })
-    res.send(getEachMedatition)
+    if (getEachMedatition) {
+        res.send(getEachMedatition)
+    } else {
+        res.status(400).send({ error: "Meditation not found" })
+    }
+})
+
+//Journal
+
+app.get('/journal', async (req, res) => {
+    const getJournal = await prisma.journal.findMany({
+        include: {
+            User: true
+        }
+    })
+    res.send(getJournal)
+})
+
+app.get('/journal/:id', async (req, res) => {
+    const getJournalById = await prisma.journal.findUnique({
+        where: { id: Number(req.params.id) },
+        include: {
+            User: true
+        }
+    })
+    if (getJournalById) {
+        res.send(getJournalById)
+    } else {
+        res.status(400).send({ error: "Journal not found" })
+    }
+})
+
+app.post('/journal', async (req, res) => {
+    const newJournal = await prisma.journal.create({
+        data: req.body,
+        include: {
+            User: true
+        }
+    })
+    res.send(newJournal)
 })
 
 app.listen(port, () => {

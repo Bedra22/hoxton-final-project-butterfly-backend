@@ -19,11 +19,11 @@ model User {
 }
 
 model Journal {
-  id      Int      @id @default(autoincrement())
+  id      Int       @id @default(autoincrement())
   title   String
   content String
-  Date    DateTime
-  User    User     @relation(fields: [userId], references: [id])
+  Date    DateTime?
+  User    User      @relation(fields: [userId], references: [id])
   userId  Int
 }
 

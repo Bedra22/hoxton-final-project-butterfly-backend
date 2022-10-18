@@ -28,11 +28,10 @@ model Journal {
 }
 
 model DailyChallenges {
-  id        Int    @id @default(autoincrement())
-  title     String
-  image     String
-  challenge String
-  User      User[]
+  id    Int    @id @default(autoincrement())
+  title String
+  image String
+  User  User[]
 }
 
 model VisionBoard {

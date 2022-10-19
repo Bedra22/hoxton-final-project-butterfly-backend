@@ -303,13 +303,18 @@ app.get('/journal/:id', async (req, res) => {
 })
 
 app.post('/journal', async (req, res) => {
-    const newJournal = await prisma.journal.create({
+    await prisma.journal.create({
         data: req.body,
         include: {
             User: true
         }
     })
-    res.send(newJournal)
+    const getJournal = await prisma.journal.findMany({
+        include: {
+            User: true
+        }
+    })
+    res.send(getJournal)
 })
 
 app.patch('/journal/:id', async (req, res) => {
@@ -369,7 +374,12 @@ app.post('/visionboard', async (req, res) => {
             User: true
         }
     })
-    res.send(newVisionBoard)
+    const getVisionBoard = await prisma.visionBoard.findMany({
+        include: {
+            User: true
+        }
+    })
+    res.send(getVisionBoard)
 })
 
 app.patch('/visionboard/:id', async (req, res) => {

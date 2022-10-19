@@ -52,7 +52,6 @@ model Affrimations {
 model EachAffrimation {
   id                     Int                      @id @default(autoincrement())
   title                  String
-  image                  String
   Affrimations           Affrimations?            @relation(fields: [affrimationsId], references: [id])
   affrimationsId         Int?
   eachaffrimationsection EachAffrimationSection[]

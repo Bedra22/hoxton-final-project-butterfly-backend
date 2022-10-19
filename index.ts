@@ -331,10 +331,15 @@ app.patch('/journal/:id', async (req, res) => {
 
 app.delete('/journal/:id', async (req, res) => {
     const id = Number(req.params.id)
-    const deleteJournal = await prisma.journal.delete({
+    await prisma.journal.delete({
         where: { id }
     })
-    res.send(deleteJournal)
+    const getJournal = await prisma.journal.findMany({
+        include: {
+            User: true
+        }
+    })
+    res.send(getJournal)
 })
 
 //Vision Board

@@ -351,7 +351,7 @@ app.get('/visionBoard', async (req, res) => {
                 User: true
             }
         })
-        res.send(getVisionBoard)
+        res.send(getVisionBoard.reverse())
     } catch (error) {
         // @ts-ignore
         res.status(400).send({ error: error.message })
@@ -384,7 +384,7 @@ app.post('/visionboard', async (req, res) => {
             User: true
         }
     })
-    res.send(getVisionBoard)
+    res.send(getVisionBoard.reverse())
 })
 
 app.patch('/visionboard/:id', async (req, res) => {
